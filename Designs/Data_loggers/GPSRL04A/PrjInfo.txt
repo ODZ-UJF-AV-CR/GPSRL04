@@ -1,0 +1,14 @@
+
+[InfoShortDescription.en]
+  LABduino based Ionisation Radiation Logger
+
+[InfoShortDescription.cs]
+  Zapisovač intenzity kosmického záření postavený z LABduina
+  
+[InfoLongDescription.en]
+  It can log intensity of ionising radiation with GPS coordinates on an SD card.
+
+[InfoLongDescription.cs]
+  Zaznamená intenzitu společně s polohou na SD kartu. 
+
+[End]
