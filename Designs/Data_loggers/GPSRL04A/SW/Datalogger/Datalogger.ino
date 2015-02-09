@@ -58,7 +58,9 @@ void setup()
   }
   Serial.println("card initialized.");
 
-  ReadGPS();
+  dataString = "";
+  ReadGPRMC();
+
 //  filename = dataString.substring(0,5) + dataString.substring(dataString.length()-5,dataString.length()) + filename;
   int len = dataString.length()-1;
   filename = dataString.substring(len-2,len) + dataString.substring(len-4,len-2) + dataString.substring(len-6,len-4) + dataString.substring(0,2) + ".CSV ";
@@ -66,8 +68,10 @@ void setup()
 
 void loop()
 { 
-  ReadGPS();
-
+  dataString = "";
+  ReadGPRMC();
+  ReadGPGGA();
+  
   digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(20);               // wait for a second
   digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
@@ -111,9 +115,10 @@ void loop()
 }
 
 
-void ReadGPS()
+void ReadGPRMC()
 {
-  dataString = "";
+  // $GPRMC,091451.00,A,4915.64143,N,01441.50397,E,0.053,,090215,,,A*74
+
   coll = 0;
   
   while(1)
@@ -147,6 +152,41 @@ void ReadGPS()
 }
 
 
+void ReadGPGGA()
+{
+  // $GPGGA,091451.00,4915.64143,N,01441.50397,E,1,09,0.90,443.2,M,44.0,M,,*50
+
+  coll = 0;
+  
+  while(1)
+  {
+    // get incoming byte:
+    while (!Serial.available());
+    if (Serial.read() != '$') continue;
+    while (!Serial.available());
+    if (Serial.read() != 'G') continue;
+    while (!Serial.available());
+    if (Serial.read() != 'P') continue;
+    while (!Serial.available());
+    if (Serial.read() != 'G') continue;
+    while (!Serial.available());
+    if (Serial.read() != 'G') continue;
+    while (!Serial.available());
+    if (Serial.read() != 'A') continue;
+    while (!Serial.available());
+    if (Serial.read() != ',') continue;
+    break;
+  }  
+  
+  do
+  {
+    while (!Serial.available());
+    inChar = (char)Serial.read();
+    if (inChar == ',') coll++;
+    if (coll > 4) dataString += inChar;
+  }
+  while (coll < 12);
+}
 
 
 
